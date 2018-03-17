@@ -6,20 +6,20 @@ headers = {'User-Agent':'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) 
 url = 'http://www.xicidaili.com/nn/1' 
 s = requests.get(url,headers = headers) 
 soup = BeautifulSoup(s.text,'lxml') 
-ips = soup.select('#ip_list tr') 
-fp = open('host.txt','w') 
+ips = soup.select('#ip_list tr')  
+proxys = list()
 
-for i in ips: 
-    try: 
-        ipp = i.select('td') 
-        ip = ipp[1].text 
-        host = ipp[2].text 
-        fp.write(ip) 
-        fp.write('\t') 
-        fp.write(host) 
-        fp.write('\n') 
-    except Exception as e : 
-        print ('no ip !') 
-fp.close()
+for i in ips:   
+    ipp = i.select('td') 
+    if len(ipp) < 3:
+        continue
+    ip = ipp[1].text 
+    host = ipp[2].text
+    proxy = 'http:\\' + ip + ':' + host
+    proxies = {'proxy':proxy} 
+    proxys.append(proxies)
+
+print('Finished!')
+
 
 
