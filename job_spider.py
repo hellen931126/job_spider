@@ -4,7 +4,7 @@ import os
 import pprint
 import csv
 
-from verify_proxy_ips import proxys
+from get_proxy import proxys
 from bs4 import BeautifulSoup
 
 headers = {'User-Agent':'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Mobile Safari/537.36'} 
