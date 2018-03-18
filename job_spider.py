@@ -3,26 +3,42 @@ import random
 import os
 import pprint
 import csv
+import json
 
 from get_proxy import proxys
 from bs4 import BeautifulSoup
+from test import headers
 
-headers = {'User-Agent':'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Mobile Safari/537.36'} 
+# headers = {'User-Agent':'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Mobile Safari/537.36'} 
+
 
 class Job_spider(): 
     base_url = "http://www.lagou.com/zhaopin/"
     
     def __init__(self, keyword):
         self.keyword = keyword
+    
+    def __isempty(self, url):
+        htmls = requests.get(url, headers = random.choice(headers),proxies=random.choice(proxys)).text
+        soup = BeautifulSoup(htmls, "html5lib")
+        contents = soup.select(".item_con_list li")
+        if contents:
+            return False
+        return True
 
-    def __get_urls(self, end):
+    def __get_urls(self):
         urls = []
-        for page in range(end):
-            urls.append(Job_spider.base_url + self.keyword + "/" + str(page+1) + "/")
+        page = 1
+        while True:
+            url = Job_spider.base_url + self.keyword + "/" + str(page) + "/"
+            if self.__isempty(url):
+                break    
+            urls.append(url)
+            page += 1
         return urls
 
     def __analysis(self, url):
-        htmls = requests.get(url, headers = headers,proxies=random.choice(proxys)).text
+        htmls = requests.get(url, headers = random.choice(headers),proxies=random.choice(proxys)).text
         soup = BeautifulSoup(htmls, "html5lib")
         contents = soup.select(".item_con_list li")
 
@@ -49,7 +65,7 @@ class Job_spider():
         f.close()
 
     def go(self):
-        urls = self.__get_urls(end=30)
+        urls = self.__get_urls()
         for url in urls:
             jobs = self.__analysis(url)
             self.__save(jobs)
