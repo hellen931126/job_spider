@@ -1,4 +1,4 @@
-## Job_spider
+## JobSpider
 
 ### 目的
     
@@ -33,11 +33,15 @@ jobs表设计如下：
 
 * 环境：Python3 & requests & BeautifulSoup
 * 运行： `python job_spider.py`
+* 数据处理
+* 将处理好的`data.csv`文件导入`mongodb`
+    
+    `mongoimport -d "resources" --type "csv" -c "jobs" --file=data.csv -h localhost:27017 -f "title,salary,company,location,tags,welfare,format_time"`
 
 ### 需要解决的问题
 * ~~目前只能爬取前五页，所以需要写反反爬虫机制~~
 * ~~需要爬取某一岗位的总页数，目前是写死的~~
-* 目前只是把数据存入了csv文件，还需要建立数据库来存储
+* ~~目前只是把数据存入了csv文件，还需要建立数据库来存储~~
 * 需要考虑到爬虫异常的处理，如网络异常等
 * 分布式爬取
 * ... 

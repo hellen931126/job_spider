@@ -41,7 +41,7 @@ class Job_spider():
                 info=[title, salary, company, location, tags, welfare, format_time]
                 jobs.append(info)
             page += 1
-            time.sleep(random.randint(3,10))
+            # time.sleep(random.randint(3,10))
         return jobs
               
     def __save(self, jobs):
