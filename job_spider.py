@@ -5,6 +5,8 @@ import pprint
 import csv
 import json
 import time
+import re
+import datetime
 
 from get_proxy import proxys
 from bs4 import BeautifulSoup
@@ -16,6 +18,16 @@ class Job_spider():
     
     def __init__(self, keyword):
         self.keyword = keyword
+
+    def __refine_time(self, str):
+        format_time = str.strip("发布")
+        today = datetime.date.today()
+        if "天前" in format_time:
+            last_days = int(re.sub("\D", "", format_time))
+            return today-datetime.timedelta(days = int(last_days))
+        if ":" in format_time:
+            return today
+        return format_time
 
     def __analysis(self): 
         page = 1
@@ -37,11 +49,11 @@ class Job_spider():
                 location = content.select(".add em")[0].text
                 tags = [tag.text for tag in content.select(".list_item_bot .li_b_l span")]
                 welfare = content.select(".li_b_r")[0].text
-                format_time = content.select(".format-time")[0].text
+                format_time = self.__refine_time(content.select(".format-time")[0].text)
                 info=[title, salary, company, location, tags, welfare, format_time]
                 jobs.append(info)
             page += 1
-            # time.sleep(random.randint(3,10))
+            time.sleep(random.randint(3,10))
         return jobs
               
     def __save(self, jobs):

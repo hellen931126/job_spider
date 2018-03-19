@@ -8,24 +8,22 @@
 
 数据库暂定使用非关系型数据库Mongodb，它以键值对存储，结构不固定，这样每一条记录可以有不同的字段，可以少建几个关联表，方便爬虫功能的扩展
 
-数据库的初始结构设计如下：
+jobs表的设计用一个职位的爬取结果展示如下：
 
-jobs表设计如下：
 
 
     {   
         "_id" :
-        "job_title" : String
-        "salary" : String
+        "job_title" : "Python开发工程师",
+        "salary" : "10k-20k",
         "company" : {
-            "company_name" : String
-            "industry" : String
-            "verified" : Bool
-        }
-        "location" : String
-        "tag" : List String
-        "welfare" : String
-        "format_time" : String
+            "company_name" : '顺网科技',
+            "industry" : '游戏,文化娱乐 / 上市公司'
+        },
+        "location" : "成都·武侯区",
+        "tag" : "['游戏', '直播', '中级', 'Java', '后端']",
+        "welfare" : "上市公司,大数据,大平台,福利健全",
+        "format_time" : 2018-03-19
     }
 
 
