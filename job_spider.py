@@ -13,9 +13,9 @@ from bs4 import BeautifulSoup
 from configs import headers, cookies
 
 
-class Job_spider(): 
+class Job_spider():
     base_url = "http://www.lagou.com/zhaopin/"
-    
+
     def __init__(self, keyword):
         self.keyword = keyword
 
@@ -24,38 +24,42 @@ class Job_spider():
         today = datetime.date.today()
         if "天前" in format_time:
             last_days = int(re.sub("\D", "", format_time))
-            return today-datetime.timedelta(days = int(last_days))
+            return today-datetime.timedelta(days=last_days)
         if ":" in format_time:
             return today
         return format_time
 
-    def __analysis(self): 
+    def __analysis(self):
         page = 1
         jobs = []
         while True:
-            url = Job_spider.base_url + self.keyword + "/" + str(page) + "/" 
-            htmls = requests.get(url, headers = random.choice(headers),cookies = cookies, proxies=random.choice(proxys)).text
+            url = Job_spider.base_url + self.keyword + "/" + str(page) + "/"
+            htmls = requests.get(url, headers=random.choice(
+                headers), cookies=cookies, proxies=random.choice(proxys)).text
             soup = BeautifulSoup(htmls, "html5lib")
             contents = soup.select(".item_con_list li")
             if len(contents) == 0:
-                break     
+                break
             for content in contents:
                 title = content.select("h3")[0].text
                 salary = content.select(".money")[0].text
                 company = {
-                        "company_name": content.select(".company_name a")[0].text,
-                        "industry": content.select(".industry")[0].text.strip()
-                    }
+                    "company_name": content.select(".company_name a")[0].text,
+                    "industry": content.select(".industry")[0].text.strip()
+                }
                 location = content.select(".add em")[0].text
-                tags = [tag.text for tag in content.select(".list_item_bot .li_b_l span")]
+                tags = [tag.text for tag in content.select(
+                    ".list_item_bot .li_b_l span")]
                 welfare = content.select(".li_b_r")[0].text
-                format_time = self.__refine_time(content.select(".format-time")[0].text)
-                info=[title, salary, company, location, tags, welfare, format_time]
+                format_time = self.__refine_time(
+                    content.select(".format-time")[0].text)
+                info = [title, salary, company,
+                        location, tags, welfare, format_time]
                 jobs.append(info)
             page += 1
-            time.sleep(random.randint(3,10))
+            time.sleep(random.randint(3, 10))
         return jobs
-              
+
     def __save(self, jobs):
         f = open("data.csv", "a")
         writer = csv.writer(f)
@@ -65,8 +69,7 @@ class Job_spider():
     def go(self):
         jobs = self.__analysis()
         self.__save(jobs)
-        
+
 
 spider = Job_spider("Python")
 spider.go()
-
